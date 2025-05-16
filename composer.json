@@ -1,0 +1,14 @@
+{
+  "name": "jvtonani/payments-hub",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "joao",
+      "email": "tonanijoao@gmail.com"
+    }
+  ],
+  "require": {
+  }
+}
