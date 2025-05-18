@@ -2,19 +2,34 @@
 
 namespace App\Wallet\Domain\Entity;
 
-use App\User\Domain\ValueObject\Cpf;
-use App\Wallet\Domain\ValueObject\Balance;
+use App\Shared\Domain\ValueObject\ValueObject\Cpf;
+use App\Shared\Domain\ValueObject\ValueObject\Real;
 
 class Wallet
 {
     private Cpf $cpf;
-    private Balance $balance;
-
-    public function debit(Balance $balance): void {
-        $this->balance = $this->balance->subtract($balance);
+    private Real $balance;
+    public function __construct(Cpf $cpf, Real $amount)
+    {
+        $this->cpf = $cpf;
+        $this->balance = $amount;
     }
 
-    public function credit(Balance $balance): void {
-        $this->balance = $this->balance->add($balance);
+    public static function createWallet(string $cpf, float $amount = 0): Wallet
+    {
+        return new Wallet(new Cpf($cpf), new Real($amount));
+    }
+
+    public function debit(float $amount): void {
+        $this->balance = $this->balance->subtract(new Real($amount));
+    }
+
+    public function credit(float $amount): void {
+        $this->balance = $this->balance->add(new Real($amount));
+    }
+
+    public function getBalance(): Real
+    {
+        return $this->balance;
     }
 }

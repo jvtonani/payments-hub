@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: payments-hub-app
+    build:
+      context: .
+    volumes:
+      - ./:/opt/www
+    ports:
+      - "9501:9501"
+    environment:
+      - APP_ENV=dev
+      - SCAN_CACHEABLE=false
+      # Redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # DB
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=payments_db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      #RabbitMq
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    depends_on:
+      - redis
+      - mysql
+      - rabbitmq
+
+  redis:
+    image: redis:7-alpine
+    container_name: payments-hub-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: payments-hub-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: payments_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: payments-hub-rabbitmq
+    ports:
+      - "5672:5672" #AMQP
+      - "15672:15672" #Interface gráfica
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+volumes:
+  redis-data:
+  mysql-data:
+  rabbitmq-data:
