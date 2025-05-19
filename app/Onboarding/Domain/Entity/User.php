@@ -50,7 +50,7 @@ class User
     public function toArray(): array
     {
         return [
-            'id' =>  $this->id,
+            'id' =>  (int) $this->id,
             'name' =>  $this->name,
             'email' =>  $this->email,
             'document_number' => (string) $this->document,

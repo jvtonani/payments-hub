@@ -61,13 +61,15 @@ class UserRepository implements UserRepositoryInterface
 
     private function toEntity(UserModel $model): User
     {
+        $userToArray = $model->toArray();
+
         return User::createUser(
-            $model->id,
-            $model->document,
-            $model->name,
-            $model->email,
-            $model->type,
-            $model->password,
+            $userToArray['document'],
+            $userToArray['name'],
+            $userToArray['email'],
+            $userToArray['user_type'],
+            $userToArray['password'],
+            $userToArray['id'],
         );
     }
 }

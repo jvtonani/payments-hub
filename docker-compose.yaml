@@ -68,8 +68,17 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:5341"
+      - "5555:80"      # Interface web do Seq
+    volumes:
+      - seq-data:/data
 
 volumes:
   redis-data:
   mysql-data:
   rabbitmq-data:
+  seq-data:

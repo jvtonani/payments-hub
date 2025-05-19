@@ -14,6 +14,7 @@ class Transfer
     private Real $amount;
     private \DateTimeImmutable $createdAt;
     private TransferStatus $transferStatus;
+    private mixed $transferId;
 
     public function __construct(Document $payeeDocument, Document $payerDocument, Real $amount)
     {
@@ -22,9 +23,10 @@ class Transfer
         $this->amount = $amount;
         $this->transferStatus = new TransferStatus(TransferStatus::CREATED);
         $this->createdAt = new \DateTimeImmutable();
+        $this->transferId = null;
     }
 
-    public static function createTransfer(string $payeeDocument, string $payerDocument, float $amount): self
+    public static function  createTransfer(string $payeeDocument, string $payerDocument, float $amount): self
     {
         $payeeDocument = new DocumentBuilder($payeeDocument);
         $payerDocument = new DocumentBuilder($payerDocument);
@@ -44,5 +46,23 @@ class Transfer
     public function getTransferStatus(): TransferStatus
     {
         return $this->transferStatus;
+    }
+
+    public function setTransferId($transferId): void
+    {
+        $this->transferId = $transferId;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->transferId,
+            'payee_document' => (string) $this->payeeDocument,
+            'payer_document' => (string) $this->payerDocument,
+            'status' => (string) $this->transferStatus,
+            'amount' => (string) $this->amount->getCurrentAmount(),
+            'created_at' =>  (string) $this->createdAt->format('Y-m-d H:i:s'),
+            'transfer_status' => (string) $this->transferStatus
+        ];
     }
 }

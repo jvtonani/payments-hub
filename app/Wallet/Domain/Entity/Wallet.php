@@ -8,18 +8,17 @@ use App\Shared\Domain\ValueObject\Real;
 
 class Wallet
 {
-    private Document $document;
+    private string $userId;
     private Real $balance;
-    public function __construct(Document $document, Real $amount)
+    public function __construct(string $userId, Real $amount)
     {
-        $this->document = $document;
+        $this->userId = $userId;
         $this->balance = $amount;
     }
 
-    public static function createWallet(string $documentNumber, float $amount = 0): Wallet
+    public static function createWallet(string $userId, float $amount = 0): Wallet
     {
-        $document = new DocumentBuilder($documentNumber);
-        return new Wallet($document->getDocument(), new Real($amount));
+        return new Wallet($userId, new Real($amount));
     }
 
     public function debit(float $amount): void {
@@ -30,8 +29,21 @@ class Wallet
         $this->balance = $this->balance->add(new Real($amount));
     }
 
+    public function hasSufficientBalance(float $amount): bool
+    {
+        return $this->balance->getCurrentAmount() >= $amount;
+    }
+
     public function getBalance(): Real
     {
         return $this->balance;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => (int) $this->userId,
+            'balance' => $this->balance->getCurrentAmount()
+        ];
     }
 }

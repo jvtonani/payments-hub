@@ -19,6 +19,9 @@ class WalletUTest extends TestCase
         $wallet =  Wallet::createWallet('12345678999');
         $wallet->credit(10);
 
+        $walletArray = $wallet->toArray();
+
+        $this->assertSame(10.0, $walletArray['balance']);
         $this->assertSame(10.0, $wallet->getBalance()->getCurrentAmount());
     }
 
@@ -28,5 +31,12 @@ class WalletUTest extends TestCase
         $wallet->debit(10);
 
         $this->assertSame(0.0, $wallet->getBalance()->getCurrentAmount());
+    }
+
+    public function testHasSufficientBalance(): void
+    {
+        $wallet =  Wallet::createWallet('12345678999', 10);
+
+        $this->assertTrue($wallet->hasSufficientBalance(5));
     }
 }

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wallet', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->unique();
             $table->decimal('balance', 19, 5)->default(0); // Em centavos
             $table->timestamps();

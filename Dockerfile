@@ -1,4 +1,4 @@
-FROM hyperf/hyperf:8.3-alpine-v3.19-swoole
+FROM hyperf/hyperf:8.3-alpine-v3.21-swoole-slim-v6.0.2
 
 ARG timezone=America/Sao_Paulo
 ARG UID=1000
@@ -39,6 +39,16 @@ RUN chown -R appuser:appgroup /opt/www
 
 RUN mkdir -p /opt/www/runtime/container/proxy \
     && chown -R appuser:appgroup /opt/www/runtime
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers \
+    && pecl install xdebug \
+    && echo "zend_extension=/usr/lib/php83/modules/xdebug.so" > /etc/php83/conf.d/50-xdebug.ini \
+    && echo "xdebug.mode=debug" >> /etc/php83/conf.d/50-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /etc/php83/conf.d/50-xdebug.ini \
+    && echo "xdebug.client_host=172.17.0.1" >> /etc/php83/conf.d/50-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /etc/php83/conf.d/50-xdebug.ini \
+    && apk del .build-deps
+
 
 USER appuser
 
