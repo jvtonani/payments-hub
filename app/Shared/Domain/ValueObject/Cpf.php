@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Shared\Domain\ValueObject\ValueObject;
+namespace App\Shared\Domain\ValueObject;
 
-class Cpf
+class Cpf implements Document
 {
     private string $cpf;
 

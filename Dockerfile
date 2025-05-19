@@ -1,10 +1,15 @@
 FROM hyperf/hyperf:8.3-alpine-v3.19-swoole
 
 ARG timezone=America/Sao_Paulo
+ARG UID=1000
+ARG GID=1000
 
 ENV TIMEZONE=${timezone} \
     APP_ENV=dev \
     SCAN_CACHEABLE=false
+
+RUN addgroup -g $GID appgroup && \
+    adduser -D -u $UID -G appgroup appuser
 
 RUN set -ex \
     && php -v \
@@ -26,12 +31,20 @@ WORKDIR /opt/www
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev -o || true
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    chmod +x /usr/local/bin/composer
 
-COPY . .
+RUN chown -R appuser:appgroup /opt/www
+
+
+RUN mkdir -p /opt/www/runtime/container/proxy \
+    && chown -R appuser:appgroup /opt/www/runtime
+
+USER appuser
 
 RUN composer install
 
 EXPOSE 9501
 
-ENTRYPOINT ["php", "/opt/www/bin/hyperf.php", "start"]
+CMD ["tail", "-f", "/dev/null"]
+#ENTRYPOINT ["php", "/opt/www/bin/hyperf.php", "start"]

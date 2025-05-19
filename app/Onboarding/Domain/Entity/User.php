@@ -3,32 +3,76 @@
 namespace App\Onboarding\Domain\Entity;
 
 use App\Onboarding\Domain\ValueObject\UserType;
-use App\Shared\Domain\ValueObject\ValueObject\Cpf;
-use App\Shared\Domain\ValueObject\ValueObject\Email;
+use App\Shared\Domain\Builder\DocumentBuilder;
+use App\Shared\Domain\ValueObject\Document;
+use App\Shared\Domain\ValueObject\Email;
 
 class User
 {
-    private Cpf $cpf;
+    private ?string $id;
+    private Document $document;
     private string $name;
     private Email $email;
     private UserType $userType;
+    private string $personType;
+
+    private string $documentType;
     private string $password;
 
-    public static function createUser(string $cpfNumber, string $name, string $email, string $userType, string $password): self
+    public static function createUser(string $documentNumber, string $name, string $email, string $userType, string $password, ?string $id): self
     {
-        return new User(new Cpf($cpfNumber), $name, new Email($email), new UserType($userType), $password);
+        $documentBuilder = new DocumentBuilder($documentNumber);
+        return new User($documentBuilder->getDocument(), $name, new Email($email), new UserType($userType), $password, $id,);
     }
-    public function __construct(Cpf $cpf, string $name, Email $email, UserType $userType, string $password)
+    public function __construct(Document $document, string $name, Email $email, UserType $userType, string $password, ?int $id,)
     {
-        $this->cpf = $cpf;
+        $this->document = $document;
         $this->name = $name;
         $this->email = $email;
         $this->userType = $userType;
         $this->password = $password;
+        $this->id = $id;
+
+        if($document instanceof Cpf) {
+            $this->personType = 'pf';
+            $this->documentType = 'cpf';
+        } else {
+            $this->personType = 'pj';
+            $this->documentType = 'cnpj';
+        }
     }
 
     public function getUserType(): UserType
     {
         return $this->userType;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' =>  $this->id,
+            'name' =>  $this->name,
+            'email' =>  $this->email,
+            'document_number' => (string) $this->document,
+            'user_type' => (string) $this->userType,
+            'password' => $this->password,
+            'person_type' => $this->personType,
+            'document_type' => $this->documentType,
+        ];
+    }
+
+    public function getUserDocument(): Document
+    {
+        return $this->document;
+    }
+
+    public function getEmail(): Email
+    {
+        return $this->email;
+    }
+
+    public function setId(mixed $id): void
+    {
+        $this->id = (int) $id;
     }
 }
