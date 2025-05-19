@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Shared\ValueObject;
 
-use App\Shared\Domain\ValueObject\ValueObject\Email;
+use App\Shared\Domain\ValueObject\Email;
 use PHPUnit\Framework\TestCase;
 
 class EmailUTest extends TestCase

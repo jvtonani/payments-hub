@@ -9,11 +9,15 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use Hyperf\Watcher\Driver\ScanFileDriver;
+
 return [
-    'handler' => [
-        'http' => [
-            \App\Shared\Infra\Exceptions\GenericExceptionHandler::class,
-            \App\Shared\Infra\Exceptions\DomainExceptionHandler::class,
-        ],
+    'driver' => ScanFileDriver::class,
+    'bin' => PHP_BINARY,
+    'watch' => [
+        'dir' => ['app', 'config'],
+        'file' => ['.env'],
+        'scan_interval' => 2000,
     ],
+    'ext' => ['.php', '.env'],
 ];

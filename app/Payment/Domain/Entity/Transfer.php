@@ -3,29 +3,32 @@
 namespace App\Payment\Domain\Entity;
 
 use App\Payment\Domain\ValueObject\TransferStatus;
-use App\Shared\Domain\ValueObject\ValueObject\Cpf;
-use App\Shared\Domain\ValueObject\ValueObject\Real;
+use App\Shared\Domain\Builder\DocumentBuilder;
+use App\Shared\Domain\ValueObject\Document;
+use App\Shared\Domain\ValueObject\Real;
 
 class Transfer
 {
-    private Cpf $payeeCpf;
-    private Cpf $payerCpf;
+    private Document $payeeDocument;
+    private Document $payerDocument;
     private Real $amount;
     private \DateTimeImmutable $createdAt;
     private TransferStatus $transferStatus;
 
-    public function __construct(Cpf $payeeCpf, Cpf $payerCpf, Real $amount)
+    public function __construct(Document $payeeDocument, Document $payerDocument, Real $amount)
     {
-        $this->payeeCpf = $payeeCpf;
-        $this->payerCpf = $payerCpf;
+        $this->payeeDocument = $payeeDocument;
+        $this->payerDocument = $payerDocument;
         $this->amount = $amount;
         $this->transferStatus = new TransferStatus(TransferStatus::CREATED);
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public static function createTransfer(string $payeeCpf, string $payerCpf, float $amount): self
+    public static function createTransfer(string $payeeDocument, string $payerDocument, float $amount): self
     {
-        return new Transfer(new Cpf($payeeCpf), new Cpf($payerCpf), new Real($amount));
+        $payeeDocument = new DocumentBuilder($payeeDocument);
+        $payerDocument = new DocumentBuilder($payerDocument);
+        return new Transfer($payeeDocument->getDocument(), $payerDocument->getDocument(), new Real($amount));
     }
 
     public function setStatusFinished(): void

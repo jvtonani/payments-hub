@@ -9,4 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
+use App\Onboarding\Interface\Http\Controllers\CreateUserController;
 use Hyperf\HttpServer\Router\Router;
+
+Router::post( '/user', [CreateUserController::class, 'perform']);

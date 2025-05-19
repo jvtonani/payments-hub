@@ -17,7 +17,7 @@ return [
         'host' => env('DB_HOST', 'mysql'),
         'database' => env('DB_DATABASE', 'payments_db'),
         'port' => env('DB_PORT', 3306),
-        'username' => env('DB_USERNAME', 'root'),
+        'username' => env('DB_USERNAME', 'payments'),
         'password' => env('DB_PASSWORD', 'rootpassword'),
         'charset' => env('DB_CHARSET', 'utf8'),
         'collation' => env('DB_COLLATION', 'utf8_unicode_ci'),

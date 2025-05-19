@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Shared\ValueObject;
 
-use App\Shared\Domain\ValueObject\ValueObject\Real;
+use App\Shared\Domain\ValueObject\Real;
 use PHPUnit\Framework\TestCase;
 
 class RealUTest extends TestCase

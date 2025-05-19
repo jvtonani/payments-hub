@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Shared\ValueObject;
 
-use App\Shared\Domain\ValueObject\ValueObject\Cpf;
+use App\Shared\Domain\ValueObject\Cpf;
 use PHPUnit\Framework\TestCase;
 
 class CpfUTest extends TestCase

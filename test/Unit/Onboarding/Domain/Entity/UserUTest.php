@@ -11,6 +11,7 @@ class UserUTest extends TestCase
     public function testCreateUserValidTransfer(): void
     {
         $user = User::createUser(
+            1,
             '12345678946',
             'Username',
             'email@email.com',
@@ -24,6 +25,7 @@ class UserUTest extends TestCase
     public function testCreateUserInvalidTransfer(): void
     {
         $user = User::createUser(
+            2,
             '12345678946',
             'Username',
             'email@email.com',

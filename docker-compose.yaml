@@ -5,10 +5,14 @@ services:
     container_name: payments-hub-app
     build:
       context: .
+      args: #Define as permissões para criação de arquivos pelo CLI do Hyperf
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
     volumes:
       - ./:/opt/www
     ports:
       - "9501:9501"
+      - "9003:9003"
     environment:
       - APP_ENV=dev
       - SCAN_CACHEABLE=false
@@ -19,7 +23,7 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=payments_db
-      - MYSQL_USER=root
+      - MYSQL_USER=payments
       - MYSQL_PASSWORD=rootpassword
       #RabbitMq
       - RABBITMQ_HOST=rabbitmq
@@ -45,7 +49,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: payments_db
-      MYSQL_USER: root
+      MYSQL_USER: payments
       MYSQL_PASSWORD: rootpassword
     ports:
       - "3306:3306"

@@ -2,22 +2,24 @@
 
 namespace App\Wallet\Domain\Entity;
 
-use App\Shared\Domain\ValueObject\ValueObject\Cpf;
-use App\Shared\Domain\ValueObject\ValueObject\Real;
+use App\Shared\Domain\Builder\DocumentBuilder;
+use App\Shared\Domain\ValueObject\Document;
+use App\Shared\Domain\ValueObject\Real;
 
 class Wallet
 {
-    private Cpf $cpf;
+    private Document $document;
     private Real $balance;
-    public function __construct(Cpf $cpf, Real $amount)
+    public function __construct(Document $document, Real $amount)
     {
-        $this->cpf = $cpf;
+        $this->document = $document;
         $this->balance = $amount;
     }
 
-    public static function createWallet(string $cpf, float $amount = 0): Wallet
+    public static function createWallet(string $documentNumber, float $amount = 0): Wallet
     {
-        return new Wallet(new Cpf($cpf), new Real($amount));
+        $document = new DocumentBuilder($documentNumber);
+        return new Wallet($document->getDocument(), new Real($amount));
     }
 
     public function debit(float $amount): void {
