@@ -2,16 +2,9 @@
 
 namespace App\Onboarding\Infra\Models;
 
-use Hyperf\DbConnection\Model\Model;
+use App\Shared\Infra\Database\BaseModel;
 
-class UserModel extends Model
+class UserModel extends BaseModel
 {
-    protected ?string $table = 'user';
-    protected string $primaryKey = 'id';
-    public bool $incrementing = true;
-    protected string $keyType = 'string';
-    protected array $fillable = [
-        'id', 'name', 'document', 'email', 'password', 'user_type',
-    ];
-    public bool $timestamps = true;
+    protected string $table = 'user';
 }

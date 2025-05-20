@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('payer_id');
             $table->unsignedBigInteger('payee_id');
             $table->decimal('amount', 19, 0)->default(0);
-            $table->string('status', 20); // 'pending', 'completed', 'failed'
+            $table->string('transfer_status', 20); // 'pending', 'completed', 'failed'
             $table->timestamps();
 
             $table->foreign('payer_id')->references('id')->on('user')->onDelete('cascade');

@@ -8,20 +8,26 @@ use App\Onboarding\Infra\Models\UserModel;
 
 class UserRepository implements UserRepositoryInterface
 {
+    public function __construct(private UserModel $userModel)
+    {
+    }
 
     public function findById(string $id): ?User
     {
-        $model = UserModel::find($id);
-        if ($model === null) {
+        $query = 'SELECT * FROM user WHERE id = :id';
+        $users = $this->userModel->query($query, [':id' => $id]);
+
+        if(empty($users)){
             return null;
         }
-        return $this->toEntity($model);
+
+        return $this->toEntity($users[0]);
     }
 
     public function findByEmailOrCpf(string $identifier): ?User
     {
         $model = UserModel::where('email', $identifier)
-            ->orWhere('document', $identifier)
+            ->orWhere('document_number', $identifier)
             ->first();
 
         if ($model === null) {
@@ -32,42 +38,33 @@ class UserRepository implements UserRepositoryInterface
 
     public function save(User $user): mixed
     {
-        $user = $user->toArray();
-
-        $model = new UserModel();
-
-        $model->name = $user['name'];
-        $model->document = $user['document_number'];
-        $model->email = $user['email'];
-        $model->password = $user['password'];
-        $model->user_type = $user['user_type'];
-        $model->person_type = $user['person_type'];
-        $model->document_type = $user['document_type'];
-
-        $model->save();
-
-        return $model->getKey();
+        return $this->userModel->save($user->toArray());
     }
 
-    public function existsByCpf(string $cpf): bool
+    public function existsByDocument(string $document): bool
     {
-        return UserModel::where('document', $cpf)->exists();
+        $query =  'SELECT * FROM user WHERE document_number = :document';
+
+        return (bool) $this->userModel->query($query, [':document' => $document]);
     }
 
     public function existsByEmail(string $email): bool
     {
-        return UserModel::where('email', $email)->exists();
+        $query = 'SELECT * FROM user WHERE email = :email';
+
+        return (bool) $this->userModel->query($query, [':email' => $email]);
     }
 
-    private function toEntity(UserModel $model): User
+    private function toEntity(Array $userResult): User
     {
         return User::createUser(
-            $model->id,
-            $model->document,
-            $model->name,
-            $model->email,
-            $model->type,
-            $model->password,
+            $userResult['document_number'],
+            $userResult['name'],
+            $userResult['email'],
+            $userResult['user_type'],
+            $userResult['password'],
+            $userResult['cellphone'],
+            $userResult['id'],
         );
     }
 }

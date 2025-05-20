@@ -5,7 +5,7 @@ services:
     container_name: payments-hub-app
     build:
       context: .
-      args: #Define as permissões para criação de arquivos pelo CLI do Hyperf
+      args: #Define as permissões para criação de arquivos pelo container e manipulação pelo host
         UID: ${UID:-1000}
         GID: ${GID:-1000}
     volumes:
@@ -34,7 +34,6 @@ services:
       - redis
       - mysql
       - rabbitmq
-
   redis:
     image: redis:7-alpine
     container_name: payments-hub-redis
@@ -68,8 +67,8 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
-
 volumes:
   redis-data:
   mysql-data:
   rabbitmq-data:
+  seq-data:
