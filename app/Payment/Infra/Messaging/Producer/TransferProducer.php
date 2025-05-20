@@ -2,9 +2,11 @@
 
 namespace App\Payment\Infra\Messaging\Producer;
 
-use App\Payment\Events\TransferFailedEvent;
+use App\Payment\Application\Events\TransferCreatedEvent;
+use App\Payment\Application\Events\TransferFailedEvent;
+use App\Payment\Application\Events\TransferFinishedEvent;
 use Hyperf\Amqp\Producer;
-use App\Payment\Events\TransferCreatedEvent;
+
 class TransferProducer
 {
     public function __construct(private Producer $producer) {}
@@ -28,6 +30,17 @@ class TransferProducer
         string $transferStatus
     ): void {
         $event = new TransferFailedEvent($transferId, $payerId, $payeeId, $amount, $transferStatus);
+        $this->producer->produce($event);
+    }
+
+    public function publishTransferFinishedEvent(
+        string $transferId,
+        string $payerId,
+        string $payeeId,
+        int $amount,
+        string $transferStatus
+    ): void {
+        $event = new TransferFinishedEvent($transferId, $payerId, $payeeId, $amount, $transferStatus);
         $this->producer->produce($event);
     }
 }

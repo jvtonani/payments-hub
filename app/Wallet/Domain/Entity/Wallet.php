@@ -2,8 +2,6 @@
 
 namespace App\Wallet\Domain\Entity;
 
-use App\Shared\Domain\Builder\DocumentBuilder;
-use App\Shared\Domain\ValueObject\Document;
 use App\Shared\Domain\ValueObject\Real;
 
 class Wallet

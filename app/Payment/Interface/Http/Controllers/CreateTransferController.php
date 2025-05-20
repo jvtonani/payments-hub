@@ -2,21 +2,23 @@
 
 namespace App\Payment\Interface\Http\Controllers;
 
-use App\Payment\Domain\UseCases\CreateTransferUseCase;
+use App\Payment\Application\UseCases\CreateTransferUseCase;
 use App\Shared\Interface\Http\Controller\AbstractController;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class CreateTransferController extends AbstractController
 {
-    public function __construct(private CreateTransferUseCase $createTransferUseCase, private LoggerInterface $logger)
+    public function __construct(protected ResponseInterface $response, private CreateTransferUseCase $createTransferUseCase, private LoggerInterface $logger)
     {
     }
 
-    public function perform(): mixed
+    public function perform(): \Psr\Http\Message\ResponseInterface
     {
         $data = $this->request->all();
+        $this->logger->info("Inicio da transferência");
+        $returnData = $this->createTransferUseCase->execute($data['payee'], $data['payer'], $data['value']);
 
-        $this->logger->info('Está logando', []);
-        return $this->createTransferUseCase->execute($data['payee'], $data['payer'], $data['value']);
+        return $this->response->json($returnData)->withStatus(201);
     }
 }

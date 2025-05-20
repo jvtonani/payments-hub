@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Authorization\Application\ExternalAuthorizer;
 use App\Authorization\Domain\Interfaces\AuthorizerInterface;
-use App\Authorization\Infra\ExternalAuthorizer;
 use App\Onboarding\Domain\Repositories\UserRepositoryInterface;
 use App\Onboarding\Infra\Repositories\UserRepository;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;

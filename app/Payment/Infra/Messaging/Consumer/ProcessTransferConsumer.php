@@ -2,8 +2,8 @@
 
 namespace App\Payment\Infra\Messaging\Consumer;
 
+use App\Payment\Application\UseCases\ProcessTransferUseCase;
 use App\Payment\Domain\Entity\Transfer;
-use App\Payment\Domain\UseCases\ProcessTransferUseCase;
 use App\Shared\Domain\ValueObject\TransferStatus;
 use Hyperf\Amqp\Annotation\Consumer;
 use Hyperf\Amqp\Message\ConsumerMessage;
@@ -27,7 +27,6 @@ class ProcessTransferConsumer extends ConsumerMessage
     public function consume($data): Result
     {
         if($data['transfer_status'] != TransferStatus::CREATED) {
-            $this->logger->info('Transação já processada', $data);
             return Result::ACK;
         }
 

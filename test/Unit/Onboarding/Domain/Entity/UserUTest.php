@@ -16,6 +16,7 @@ class UserUTest extends TestCase
             'email@email.com',
             UserType::COMMOM,
             'password',
+            '1698484999889',
             1
         );
 
@@ -40,6 +41,7 @@ class UserUTest extends TestCase
             'email@email.com',
             UserType::MERCHANT,
             'password',
+            '9838912983',
             2
         );
 

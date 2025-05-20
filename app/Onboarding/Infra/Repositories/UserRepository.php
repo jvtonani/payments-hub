@@ -63,6 +63,7 @@ class UserRepository implements UserRepositoryInterface
             $userResult['email'],
             $userResult['user_type'],
             $userResult['password'],
+            $userResult['cellphone'],
             $userResult['id'],
         );
     }

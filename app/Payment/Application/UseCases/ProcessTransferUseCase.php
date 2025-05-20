@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Payment\Domain\UseCases;
+namespace App\Payment\Application\UseCases;
 
-use App\Payment\Domain\Entity\Transfer;
 use App\Authorization\Domain\Interfaces\AuthorizerInterface;
+use App\Payment\Domain\Entity\Transfer;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;
 use App\Payment\Infra\Messaging\Producer\TransferProducer;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
@@ -24,21 +24,15 @@ class ProcessTransferUseCase
 
     public function execute(Transfer $transfer): void
     {
-        $this->logger->info('RECEBIDO');
         if(!$this->authorizer->isAuthorized()) {
             $this->processTransferFailed($transfer);
-
+            $this->logger->info('Transferência falhou, pagador foi estornado');
             return;
         };
 
-        $payeeWallet = $this->walletRepository->findByUserId($transfer->getPayeeUserId());
+        $this->processTransferFinished($transfer);
+        $this->logger->info('Transferência sucesso. Demais serviços foram notificados');
 
-        $payeeWallet->credit($transfer->getTransferBalance());
-
-        $this->walletRepository->update($payeeWallet);
-
-        $transfer->setStatusFinished();
-        $this->transferRepository->update($transfer);
     }
 
     private function processTransferFailed (Transfer $transfer): void
@@ -53,5 +47,21 @@ class ProcessTransferUseCase
         $this->walletRepository->update($payerWallet);
 
         $this->transferProducer->publishTransferFailedEvent($transferArray['id'], $transferArray['payer_user_id'], $transferArray['payee_user_id'], $transferArray['amount'], $transferArray['transfer_status']);
+    }
+
+    private function processTransferFinished(Transfer $transfer): void
+    {
+        $payeeWallet = $this->walletRepository->findByUserId($transfer->getPayeeUserId());
+
+        $payeeWallet->credit($transfer->getTransferBalance());
+
+        $this->walletRepository->update($payeeWallet);
+
+        $transfer->setStatusFinished();
+        $this->transferRepository->update($transfer);
+
+        $transferArray = $transfer->toArray();
+
+        $this->transferProducer->publishTransferFinishedEvent($transferArray['id'], $transferArray['payer_user_id'], $transferArray['payee_user_id'], $transferArray['amount'], $transferArray['transfer_status']);
     }
 }

@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 use App\Onboarding\Interface\Http\Controllers\CreateUserController;
 use App\Payment\Interface\Http\Controllers\CreateTransferController;
+use App\Payment\Interface\Http\Controllers\GetTransferController;
 use Hyperf\HttpServer\Router\Router;
 
 Router::post( '/user', [CreateUserController::class, 'perform']);
 Router::post( '/transfer', [CreateTransferController::class, 'perform']);
+Router::get('/transfer/{id:\d+}', [GetTransferController::class, 'perform']);

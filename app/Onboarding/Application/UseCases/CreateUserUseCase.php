@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Onboarding\Domain\UseCases;
+namespace App\Onboarding\Application\UseCases;
 
 use App\Onboarding\Domain\Entity\User;
 use App\Onboarding\Domain\Repositories\UserRepositoryInterface;

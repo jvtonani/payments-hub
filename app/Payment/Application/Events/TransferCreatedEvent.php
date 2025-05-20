@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Payment\Events;
+namespace App\Payment\Application\Events;
 
+use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Amqp\Message\Type;
-use Hyperf\Amqp\Annotation\Producer;
 
 #[Producer]
 class TransferCreatedEvent extends ProducerMessage

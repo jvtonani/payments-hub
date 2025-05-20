@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('document_type' , 4);
             $table->string('person_type', 2);
             $table->string('email', 50)->unique();
+            $table->string('cellphone', 20)->nullable();
             $table->string('user_type', 20);
             $table->string('password');
             $table->datetimes();

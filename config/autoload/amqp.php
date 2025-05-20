@@ -1,12 +1,13 @@
 <?php
+use function Hyperf\Support\env;
 
 return [
     'enable' => true,
     'default' => [
-        'host' => 'rabbitmq',
-        'port' => 5672,
-        'user' => 'guest',
-        'password' => 'guest',
+        'host' => env('RABBITMQ_HOST','rabbitmq'),
+        'port' => (int) env('RABBITMQ_PORT', 5672),
+        'user' => env('RABBITMQ_USER', 'guest'),
+        'password' => env('RABBITMQ_PASSWORD', 'guest'),
         'vhost' => '/',
         'concurrent' => [
             'limit' => 10,

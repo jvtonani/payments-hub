@@ -13,6 +13,18 @@ class TransferRepository implements TransferRepositoryInterface
     {
     }
 
+    public function findById(int $id): ?Transfer
+    {
+        $query = 'SELECT * FROM transfer WHERE id = :id';
+        $transfer = $this->transferModel->query($query, [':id' => $id]);
+
+        if(is_null($transfer)){
+            return null;
+        }
+
+        return $this->toEntity($transfer[0]);
+    }
+
     public function save(Transfer $transfer, string $payeeId, string $payerId): mixed
     {
         $transferArray = $transfer->toArray();
@@ -32,4 +44,12 @@ class TransferRepository implements TransferRepositoryInterface
         return $this->transferModel->update($transferArray['id'], ['transfer_status' => $transferArray['transfer_status']]);
     }
 
+    private function toEntity(Array $transfer): Transfer
+    {
+        $id = $transfer['id'];
+        $transfer = Transfer::createTransfer($transfer['payee_id'], $transfer['payer_id'], $transfer['amount'], $transfer['transfer_status']);
+        $transfer->setTransferId($id);
+
+        return $transfer;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Payment\Domain\UseCases;
+namespace App\Payment\Application\UseCases;
 
 use App\Authorization\Domain\Interfaces\AuthorizerInterface;
 use App\Onboarding\Domain\Repositories\UserRepositoryInterface;
@@ -8,7 +8,6 @@ use App\Payment\Domain\Entity\Transfer;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;
 use App\Payment\Infra\Messaging\Producer\TransferProducer;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
-use App\Authorization\Infra\ExternalAuthorizer;
 
 class CreateTransferUseCase
 {
@@ -43,7 +42,6 @@ class CreateTransferUseCase
             throw new \DomainException('Recebedor não encontrado');
         }
 
-        $payeeWallet = $this->walletRepository->findByUserId($payeeId);
         $payerWallet = $this->walletRepository->findByUserId($payerId);
 
         if(!$payerWallet->hasSufficientBalance($amount)){
@@ -53,8 +51,8 @@ class CreateTransferUseCase
         $payerWallet->debit($amount);
         $this->walletRepository->update($payerWallet);
         $transfer = Transfer::createTransfer(
-            (string) $payee->getUserDocument(),
-            (string) $payer->getUserDocument(),
+            $payeeId,
+            $payerId,
             $amount
         );
 
@@ -64,8 +62,6 @@ class CreateTransferUseCase
         $this->transferProducer->publishTransferEvent($transferId, $payerId, $payeeId, $amount, (string) $transfer->getTransferStatus());
 
         return $transfer->toArray();
-
-
     }
 
     public function transferIsAuthorized(): bool
