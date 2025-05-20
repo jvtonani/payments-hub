@@ -9,6 +9,6 @@ interface UserRepositoryInterface
     public function findById(string $id): ?User;
     public function findByEmailOrCpf(string $identifier): ?User;
     public function save(User $user): mixed;
-    public function existsByCpf(string $cpf): bool;
+    public function existsByDocument(string $cpf): bool;
     public function existsByEmail(string $email): bool;
 }

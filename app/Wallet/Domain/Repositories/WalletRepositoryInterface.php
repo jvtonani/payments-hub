@@ -8,5 +8,5 @@ interface WalletRepositoryInterface
 {
     public function update(Wallet $wallet): int;
     public function findByUserId(int $userId): ?Wallet;
-    public function save(Wallet $wallet, string $userId): mixed;
+    public function save(Wallet $wallet): int;
 }

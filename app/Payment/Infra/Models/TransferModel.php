@@ -2,16 +2,9 @@
 
 namespace App\Payment\Infra\Models;
 
-use Hyperf\DbConnection\Model\Model;
+use App\Shared\Infra\Database\BaseModel;
 
-class TransferModel extends Model
+class TransferModel extends BaseModel
 {
-    protected ?string $table = 'transfer';
-    protected string $primaryKey = 'id';
-    public bool $incrementing = true;
-    protected string $keyType = 'string';
-    protected array $fillable = [
-        'id','payer_id', 'payee_id', 'amount', 'status',
-    ];
-    public bool $timestamps = true;
+    protected string $table = 'transfer';
 }

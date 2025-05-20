@@ -6,7 +6,6 @@ use App\Onboarding\Domain\Entity\User;
 use App\Onboarding\Domain\Repositories\UserRepositoryInterface;
 use App\Wallet\Domain\Entity\Wallet;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
-use App\Wallet\Infra\Repositories\WalletRepository;
 
 class CreateUserUseCase
 {
@@ -17,7 +16,7 @@ class CreateUserUseCase
 
     public function execute(User $user): User
     {
-        if($this->userRepository->existsByCpf((string) $user->getUserDocument())) {
+        if($this->userRepository->existsByDocument((string) $user->getUserDocument())) {
             throw new \DomainException('Usuário já existente');
         }
 
@@ -27,9 +26,9 @@ class CreateUserUseCase
 
         $userId = $this->userRepository->save($user);
 
-        $wallet = Wallet::createWallet((string) $user->getUserDocument(), 0);
+        $wallet = Wallet::createWallet($userId, 0);
 
-        $this->walletRepository->save($wallet, $userId);
+        $this->walletRepository->save($wallet);
 
         $user->setId($userId);
 

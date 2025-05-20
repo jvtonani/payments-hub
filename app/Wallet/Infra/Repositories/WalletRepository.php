@@ -9,45 +9,39 @@ use Hyperf\DbConnection\Db;
 
 class WalletRepository implements WalletRepositoryInterface
 {
-    public function update(Wallet $wallet): int
+    public function __construct(private WalletModel $walletModel)
     {
-        return Db::table('wallet')
-            ->where('user_id', $wallet->toArray()['user_id'])
-            ->update([
-                'balance' => $wallet->getBalance()->getCurrentAmount()
-            ]);
+
     }
 
-    public function save(Wallet $wallet, string $userId): mixed
+    public function update(Wallet $wallet): int
     {
-        $model = new WalletModel();
+        $walletArray = $wallet->toArray();
+        return $this->walletModel->update($walletArray['user_id'], ['balance'  => $walletArray['balance']]);
+    }
 
-        $model->user_id = $userId;
-        $model->balance = 0.0;
-
-        $model->save();
-
-        return $model->getKey();
+    public function save(Wallet $wallet): int
+    {
+        return $this->walletModel->save($wallet->toArray());
     }
 
     public function findByUserId(int $userId): ?Wallet
     {
-        $model = WalletModel::where('user_id', $userId)
-            ->first();
+        $query = 'SELECT * FROM wallet WHERE user_id = :user_id';
+        $wallet = $this->walletModel->query($query, [':user_id' => $userId]);
 
-        if ($model === null) {
+        if(is_null($wallet)){
             return null;
         }
-        return $this->toEntity($model);
+
+        return $this->toEntity($wallet[0]);
     }
 
-    private function toEntity(WalletModel $model): Wallet
+    private function toEntity(Array $wallet): Wallet
     {
-        $walletToArray = $model->toArray();
-
         return Wallet::createWallet(
-            $walletToArray['user_id'],
-            $walletToArray['balance']
+            $wallet['user_id'],
+            $wallet['balance']
         );
     }
 }

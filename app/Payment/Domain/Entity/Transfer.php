@@ -2,35 +2,32 @@
 
 namespace App\Payment\Domain\Entity;
 
-use App\Payment\Domain\ValueObject\TransferStatus;
-use App\Shared\Domain\Builder\DocumentBuilder;
-use App\Shared\Domain\ValueObject\Document;
 use App\Shared\Domain\ValueObject\Real;
+use App\Shared\Domain\ValueObject\TransferStatus;
 
 class Transfer
 {
-    private Document $payeeDocument;
-    private Document $payerDocument;
+    private string $payeeUserId;
+    private string $payerUserId;
     private Real $amount;
     private \DateTimeImmutable $createdAt;
     private TransferStatus $transferStatus;
     private mixed $transferId;
 
-    public function __construct(Document $payeeDocument, Document $payerDocument, Real $amount)
+    public function __construct(string $payeeUserId, string $payerUserId, Real $amount, TransferStatus $transferStatus)
     {
-        $this->payeeDocument = $payeeDocument;
-        $this->payerDocument = $payerDocument;
+        $this->payeeUserId = $payeeUserId;
+        $this->payerUserId = $payerUserId;
         $this->amount = $amount;
-        $this->transferStatus = new TransferStatus(TransferStatus::CREATED);
+        $this->transferStatus = $transferStatus;
         $this->createdAt = new \DateTimeImmutable();
         $this->transferId = null;
     }
 
-    public static function  createTransfer(string $payeeDocument, string $payerDocument, float $amount): self
+    public static function createTransfer(string $payeeUserId, string $payerUserId, float $amount, string $transferStatus = TransferStatus::CREATED): self
     {
-        $payeeDocument = new DocumentBuilder($payeeDocument);
-        $payerDocument = new DocumentBuilder($payerDocument);
-        return new Transfer($payeeDocument->getDocument(), $payerDocument->getDocument(), new Real($amount));
+        $transferStatus = self::buildTransferStatus($transferStatus);
+        return new Transfer($payeeUserId, $payerUserId, new Real($amount), $transferStatus);
     }
 
     public function setStatusFinished(): void
@@ -48,21 +45,45 @@ class Transfer
         return $this->transferStatus;
     }
 
+    public function getTransferBalance(): float
+    {
+        return $this->amount->getCurrentAmount();
+    }
+
     public function setTransferId($transferId): void
     {
         $this->transferId = $transferId;
+    }
+
+    public function getPayerUserId(): string
+    {
+        return $this->payerUserId;
+    }
+
+    public function getPayeeUserId(): string
+    {
+        return $this->payeeUserId;
     }
 
     public function toArray(): array
     {
         return [
             'id' => $this->transferId,
-            'payee_document' => (string) $this->payeeDocument,
-            'payer_document' => (string) $this->payerDocument,
-            'status' => (string) $this->transferStatus,
+            'payee_user_id' => (string) $this->payeeUserId,
+            'payer_user_id' => (string) $this->payerUserId,
             'amount' => (string) $this->amount->getCurrentAmount(),
             'created_at' =>  (string) $this->createdAt->format('Y-m-d H:i:s'),
             'transfer_status' => (string) $this->transferStatus
         ];
+    }
+
+    private static function buildTransferStatus(string $transferStatus): TransferStatus
+    {
+        return match ($transferStatus) {
+            TransferStatus::CREATED => new TransferStatus(TransferStatus::CREATED),
+            TransferStatus::FAILED => new TransferStatus(TransferStatus::FAILED),
+            TransferStatus::FINISHED => new TransferStatus(TransferStatus::FINISHED),
+            default => new \DomainException('Status de transferência inválido')
+        };
     }
 }

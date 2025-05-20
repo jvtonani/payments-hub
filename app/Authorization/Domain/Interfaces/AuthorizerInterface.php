@@ -4,6 +4,6 @@ namespace App\Authorization\Domain\Interfaces;
 
 interface AuthorizerInterface
 {
-    public function isAuthorized(int $retries): bool;
+    public function isAuthorized(): bool;
 
 }

@@ -9,15 +9,27 @@ use App\Payment\Infra\Models\TransferModel;
 class TransferRepository implements TransferRepositoryInterface
 {
 
+    public function __construct(private TransferModel $transferModel)
+    {
+    }
+
     public function save(Transfer $transfer, string $payeeId, string $payerId): mixed
     {
-        $transfer = $transfer->toArray();
-        $model = new TransferModel();
-        $model->fill($transfer);
-        $model->payer_id = $payerId;
-        $model->payee_id = $payeeId;
-        $model->save();
-        return $model->getKey();
+        $transferArray = $transfer->toArray();
+
+        $dataToInsert['payer_id'] = $payerId;
+        $dataToInsert['payee_id'] = $payeeId;
+        $dataToInsert['amount'] = $transferArray['amount'];
+        $dataToInsert['transfer_status'] = $transferArray['transfer_status'];
+
+
+        return $this->transferModel->save($dataToInsert);
+    }
+
+    public function update(Transfer $transfer): int
+    {
+        $transferArray = $transfer->toArray();
+        return $this->transferModel->update($transferArray['id'], ['transfer_status' => $transferArray['transfer_status']]);
     }
 
 }

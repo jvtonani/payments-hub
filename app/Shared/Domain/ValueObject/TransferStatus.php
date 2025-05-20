@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Payment\Domain\ValueObject;
+namespace App\Shared\Domain\ValueObject;
 
 class TransferStatus
 {

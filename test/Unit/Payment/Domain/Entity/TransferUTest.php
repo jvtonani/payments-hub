@@ -2,9 +2,9 @@
 
 namespace App\Tests\Unit\Payment\Domain\Entity;
 
-use App\Payment\Domain\ValueObject\TransferStatus;
-use PHPUnit\Framework\TestCase;
 use App\Payment\Domain\Entity\Transfer;
+use App\Shared\Domain\ValueObject\TransferStatus;
+use PHPUnit\Framework\TestCase;
 
 class TransferUTest extends TestCase
 {

@@ -52,7 +52,6 @@ class CreateTransferUseCase
 
         $payerWallet->debit($amount);
         $this->walletRepository->update($payerWallet);
-
         $transfer = Transfer::createTransfer(
             (string) $payee->getUserDocument(),
             (string) $payer->getUserDocument(),
@@ -62,7 +61,7 @@ class CreateTransferUseCase
         $transferId = $this->transferRepository->save($transfer, $payeeId, $payerId);
         $transfer->setTransferId($transferId);
 
-        $this->transferProducer->publishTransferEvent($transferId, $payerId, $payeeId, $amount);
+        $this->transferProducer->publishTransferEvent($transferId, $payerId, $payeeId, $amount, (string) $transfer->getTransferStatus());
 
         return $transfer->toArray();
 
