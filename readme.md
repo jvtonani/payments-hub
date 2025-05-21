@@ -62,8 +62,9 @@ Para facilitar, importe a collection Postman em /artifacts.
 ### Melhorias
 - Testes de integração
 - Rever fluxo de mensageria - Notificações desnecessárias
+- Utilização de schemas para separar bancos no banco
 - Adicionar mecanismos de análise estática em hooks do git
-- Revisar containers
+- Revisar build de containers
 - Introduzir mecanismos de cache para consulta de saldo
 - Implementar agentes de observabilidade
 - Implementar serviço de gerenciamento de log (Seq, Logstach + Kibana)
