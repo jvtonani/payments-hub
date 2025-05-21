@@ -1,0 +1,81 @@
+@startuml
+actor Client
+
+participant "CreateTransferController" as CTC
+participant "CreateTransferRequest" as CTR
+participant "LoggerInterface" as LOG
+participant "CreateTransferUseCase" as CTUC
+participant "UserRepository" as UR
+participant "WalletRepository" as WR
+participant "TransactionManager" as TM
+participant "TransferRepository" as TR
+participant "TransferProducer" as TP
+participant "ResponseInterface" as RESP
+
+== Controller invocation ==
+Client -> CTC: perform(request)
+activate CTC
+
+CTC -> CTR: validated()
+activate CTR
+CTR --> CTC: data
+deactivate CTR
+
+CTC -> CTUC: execute(payee, payer, value)
+activate CTUC
+
+== Domain lookups ==
+CTUC -> UR: findById(payeeId)
+activate UR
+UR --> CTUC: payee
+deactivate UR
+
+CTUC -> UR: findById(payerId)
+activate UR
+UR --> CTUC: payer
+deactivate UR
+
+CTUC -> WR: findByUserId(payerId)
+activate WR
+WR --> CTUC: payerWallet
+deactivate WR
+
+== Transactional operations ==
+CTUC -> TM: begin()
+activate TM
+TM --> CTUC: ok
+deactivate TM
+
+CTUC -> WR: update(payerWallet)
+activate WR
+WR --> CTUC: ok
+deactivate WR
+
+CTUC -> TR: save(transfer, payeeId, payerId)
+activate TR
+TR --> CTUC: transferId
+deactivate TR
+
+CTUC -> TM: commit()
+activate TM
+TM --> CTUC: ok
+deactivate TM
+
+== Publish event ==
+CTUC -> TP: publishTransferEvent(transferId, payerId, payeeId, amount, status)
+
+deactivate CTUC
+
+== Controller response ==
+CTC -> RESP: json(returnData)
+activate RESP
+RESP --> CTC: self
+deactivate RESP
+
+CTC -> RESP: withStatus(201)
+activate RESP
+RESP --> CTC: response
+deactivate RESP
+
+CTC --> Client: response
+@enduml

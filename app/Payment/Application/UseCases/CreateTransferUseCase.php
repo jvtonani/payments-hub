@@ -19,7 +19,6 @@ class CreateTransferUseCase
         private TransferRepositoryInterface $transferRepository,
         private TransferProducer $transferProducer,
         private TransactionManager $transactionManager,
-
     )
     {
     }

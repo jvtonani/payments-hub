@@ -1,0 +1,77 @@
+@startuml
+actor "RabbitMQ" as MQ
+participant "ProcessTransferConsumer" as C
+participant "ProcessTransferUseCase" as U
+participant "AuthorizerInterface" as A
+participant "TransferRepository" as TR
+participant "WalletRepository" as WR
+participant "TransferProducer" as TP
+participant "LoggerInterface" as L
+
+== Consumer receives event ==
+MQ -> C: consume(data)
+activate C
+
+C -> C: if status != CREATED\nreturn ACK
+alt status == CREATED
+    C -> U: execute(transfer)
+    activate U
+
+    U -> TR: findById(transfer.id)
+    activate TR
+    TR --> U: existingTransfer?
+    deactivate TR
+
+    alt !alreadyProcessed
+        U -> A: isAuthorized()
+        activate A
+        A --> U: true/false
+        deactivate A
+
+        alt authorized == false
+            U -> TR: update(status=FAILED)
+            activate TR
+            TR --> U: ok
+            deactivate TR
+
+            U -> WR: findByUserId(payerId)
+            activate WR
+            WR --> U: payerWallet
+            deactivate WR
+
+            U -> WR: update(after credit back)
+            activate WR
+            WR --> U: ok
+            deactivate WR
+
+            U -> TP: publishTransferFailedEvent(...)
+            U -> L: info("Transferência falhou, pagador estornado")
+        else authorized == true
+            U -> WR: findByUserId(payeeId)
+            activate WR
+            WR --> U: payeeWallet
+            deactivate WR
+
+            U -> WR: update(after credit)
+            activate WR
+            WR --> U: ok
+            deactivate WR
+
+            U -> TR: update(status=FINISHED)
+            activate TR
+            TR --> U: ok
+            deactivate TR
+
+            U -> TP: publishTransferFinishedEvent(...)
+            U -> L: info("Transferência sucesso. Demais serviços foram notificados")
+        end
+    else
+        U -> L: info("Transferência em status inadequado para processamento")
+    end
+
+    deactivate U
+end
+
+C --> MQ: ACK
+deactivate C
+@enduml
