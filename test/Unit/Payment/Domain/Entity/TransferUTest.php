@@ -10,7 +10,7 @@ class TransferUTest extends TestCase
 {
     public function testCreateTransfer(): void
     {
-        $transfer = Transfer::createTransfer('12345678999','15988999844', 0);
+        $transfer = Transfer::createTransfer('1','2', 0);
         $transfer->setTransferId(5);
         $transferArray = $transfer->toArray();
 
@@ -22,7 +22,7 @@ class TransferUTest extends TestCase
 
     public function testFinishedTransfer(): void
     {
-        $transfer = Transfer::createTransfer('12345678999','15988999844', 0);
+        $transfer = Transfer::createTransfer('1','2', 0);
         $transfer->setStatusFinished();
 
         $this->assertSame((string) $transfer->getTransferStatus(), TransferStatus::FINISHED);
@@ -30,9 +30,27 @@ class TransferUTest extends TestCase
 
     public function testFailedTransfer(): void
     {
-        $transfer = Transfer::createTransfer('12345678999','15988999844', 0);
+        $transfer = Transfer::createTransfer('1','2', 0);
         $transfer->setStatusFailed();
 
         $this->assertSame((string) $transfer->getTransferStatus(), TransferStatus::FAILED);
+    }
+
+    public function testGetTransferBalance(): void
+    {
+        $transfer = Transfer::createTransfer('1','2', 0,'finished');
+        $balance = $transfer->getTransferBalance();
+
+        $this->assertSame(0.0, $balance);
+    }
+
+    public function testGetUserId(): void
+    {
+        $transfer = Transfer::createTransfer('1','2', 0, 'failed');
+        $payeeId = $transfer->getPayeeUserId();
+        $payerId = $transfer->getPayerUserId();
+
+        $this->assertEquals($payeeId, '1');
+        $this->assertEquals($payerId, '2');
     }
 }

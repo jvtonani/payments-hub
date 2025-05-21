@@ -25,7 +25,7 @@ class User
         $documentBuilder = new DocumentBuilder($documentNumber);
         return new User($documentBuilder->getDocument(), $name, new Email($email), new UserType($userType), $password, $cellphone, $id,);
     }
-    public function __construct(Document $document, string $name, Email $email, UserType $userType, string $password, string $cellphone, ?int $id,)
+    public function __construct(Document $document, string $name, Email $email, UserType $userType, string $password, string $cellphone, ?int $id = null)
     {
         $this->document = $document;
         $this->name = $name;

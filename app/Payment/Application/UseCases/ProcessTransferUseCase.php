@@ -51,6 +51,8 @@ class ProcessTransferUseCase
 
     private function processTransferFinished(Transfer $transfer): void
     {
+
+        //Adicionar validação do status da transfer via banco para idempotencia
         $payeeWallet = $this->walletRepository->findByUserId($transfer->getPayeeUserId());
 
         $payeeWallet->credit($transfer->getTransferBalance());

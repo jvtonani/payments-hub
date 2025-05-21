@@ -47,9 +47,6 @@ RUN apk add --no-cache php83-pecl-xdebug \
     && echo "xdebug.client_host=172.17.0.1" >> /etc/php83/conf.d/50-xdebug.ini \
     && echo "xdebug.client_port=9003" >> /etc/php83/conf.d/50-xdebug.ini
 
-
-
-
 USER appuser
 
 RUN composer install

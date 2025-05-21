@@ -8,6 +8,8 @@ use App\Payment\Domain\Entity\Transfer;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;
 use App\Payment\Infra\Messaging\Producer\TransferProducer;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
+use Hyperf\DbConnection\Db;
+use App\Shared\Infra\Database\TransactionManager;
 
 class CreateTransferUseCase
 {
@@ -15,8 +17,9 @@ class CreateTransferUseCase
         private WalletRepositoryInterface $walletRepository,
         private UserRepositoryInterface $userRepository,
         private TransferRepositoryInterface $transferRepository,
-        private AuthorizerInterface $authorizer,
         private TransferProducer $transferProducer,
+        private TransactionManager $transactionManager,
+
     )
     {
     }
@@ -34,12 +37,12 @@ class CreateTransferUseCase
             throw new \DomainException('Pagador não encontrado');
         }
 
-        if(!$payer->getUserType()->canTransfer()){
-            throw new \DomainException('Apenas usuários comuns podem efetuar transferências');
-        }
-
         if(is_null($payee)){
             throw new \DomainException('Recebedor não encontrado');
+        }
+
+        if(!$payer->getUserType()->canTransfer()){
+            throw new \DomainException('Apenas usuários comuns podem efetuar transferências');
         }
 
         $payerWallet = $this->walletRepository->findByUserId($payerId);
@@ -48,25 +51,27 @@ class CreateTransferUseCase
             throw new \DomainException('Saldo insuficiente');
         }
 
-        $payerWallet->debit($amount);
-        $this->walletRepository->update($payerWallet);
-        $transfer = Transfer::createTransfer(
-            $payeeId,
-            $payerId,
-            $amount
-        );
+        try{
+            $this->transactionManager->begin();
+            $payerWallet->debit($amount);
+            $this->walletRepository->update($payerWallet);
+            $transfer = Transfer::createTransfer(
+                $payeeId,
+                $payerId,
+                $amount
+            );
 
-        $transferId = $this->transferRepository->save($transfer, $payeeId, $payerId);
+            $transferId = $this->transferRepository->save($transfer, $payeeId, $payerId);
+            $this->transactionManager->commit();
+        } catch (\Throwable $throwable){
+            $this->transactionManager->rollback();
+            throw $throwable;
+        }
+
         $transfer->setTransferId($transferId);
 
         $this->transferProducer->publishTransferEvent($transferId, $payerId, $payeeId, $amount, (string) $transfer->getTransferStatus());
 
         return $transfer->toArray();
     }
-
-    public function transferIsAuthorized(): bool
-    {
-        return $this->authorizer->isAuthorized();
-    }
-
 }

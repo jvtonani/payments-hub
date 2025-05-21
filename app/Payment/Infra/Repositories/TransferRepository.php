@@ -18,7 +18,7 @@ class TransferRepository implements TransferRepositoryInterface
         $query = 'SELECT * FROM transfer WHERE id = :id';
         $transfer = $this->transferModel->query($query, [':id' => $id]);
 
-        if(is_null($transfer)){
+        if(empty($transfer)){
             return null;
         }
 

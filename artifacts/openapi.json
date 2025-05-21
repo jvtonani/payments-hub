@@ -1,0 +1,199 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Payments Hub API",
+		"version": "1.0.0",
+		"description": "API para gerenciamento de usuários e transferências financeiras."
+	},
+	"servers": [
+		{
+			"url": "http://localhost:9501",
+			"description": "Servidor local"
+		}
+	],
+	"paths": {
+		"/user": {
+			"post": {
+				"summary": "Cria um novo usuário",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/NewUser" }
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Usuário criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/User" }
+							}
+						}
+					},
+					"422": {
+						"description": "Erro de domínio",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/DomainError" }
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ServerError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/transfer": {
+			"post": {
+				"summary": "Executa uma transferência",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/NewTransfer" }
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Transferência criada com sucesso",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Transfer" }
+							}
+						}
+					},
+					"422": {
+						"description": "Erro de domínio",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/DomainError" }
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ServerError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/transfer/{id}": {
+			"get": {
+				"summary": "Consulta detalhes de uma transferência",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Transferência encontrada",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Transfer" }
+							}
+						}
+					},
+					"422": {
+						"description": "Erro de domínio",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/DomainError" }
+							}
+						}
+					},
+					"500": {
+						"description": "Erro interno do servidor",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ServerError" }
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"NewUser": {
+				"type": "object",
+				"required": ["email", "document", "user_type", "password", "name", "person_type", "document_type", "cellphone"],
+				"properties": {
+					"email": { "type": "string", "format": "email" },
+					"document": { "type": "string" },
+					"user_type": { "type": "string" },
+					"password": { "type": "string" },
+					"name": { "type": "string" },
+					"person_type": { "type": "string" },
+					"document_type": { "type": "string" },
+					"cellphone": { "type": "string" }
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "integer", "example": 3 },
+					"name": { "type": "string", "example": "joao" },
+					"email": { "type": "string", "format": "email", "example": "joao@example.com" },
+					"document_number": { "type": "string", "example": "42891932211" },
+					"user_type": { "type": "string", "example": "common" },
+					"password": { "type": "string", "example": "123" },
+					"person_type": { "type": "string", "example": "pj" },
+					"document_type": { "type": "string", "example": "cnpj" },
+					"cellphone": { "type": "string", "example": "16984188998" }
+				}
+			},
+			"NewTransfer": {
+				"type": "object",
+				"required": ["value", "payer", "payee"],
+				"properties": {
+					"value": { "type": "number", "example": 10.0 },
+					"payer": { "type": "integer", "example": 1 },
+					"payee": { "type": "integer", "example": 2 }
+				}
+			},
+			"Transfer": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "integer", "example": 38 },
+					"payee_user_id": { "type": "string", "example": "2" },
+					"payer_user_id": { "type": "string", "example": "1" },
+					"amount": { "type": "string", "example": "10" },
+					"created_at": { "type": "string", "format": "date-time", "example": "2025-05-20 10:44:18" },
+					"transfer_status": { "type": "string", "example": "created" }
+				}
+			},
+			"DomainError": {
+				"type": "object",
+				"properties": {
+					"message": { "type": "string", "example": "Motivo do erro" }
+				}
+			},
+			"ServerError": {
+				"type": "object",
+				"properties": {
+					"error": { "type": "string", "example": "O servidor não reagiu como deveria. Tente novamente" }
+				}
+			}
+		}
+	}
+}
