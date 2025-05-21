@@ -5,7 +5,6 @@ namespace App\Wallet\Infra\Repositories;
 use App\Wallet\Domain\Entity\Wallet;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
 use App\Wallet\Infra\Models\WalletModel;
-use Hyperf\DbConnection\Db;
 
 class WalletRepository implements WalletRepositoryInterface
 {
@@ -30,7 +29,7 @@ class WalletRepository implements WalletRepositoryInterface
         $query = 'SELECT * FROM wallet WHERE user_id = :user_id';
         $wallet = $this->walletModel->query($query, [':user_id' => $userId]);
 
-        if(is_null($wallet)){
+        if(empty($wallet)){
             return null;
         }
 

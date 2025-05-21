@@ -4,8 +4,8 @@ namespace App\Onboarding\Domain\ValueObject;
 
 class UserType
 {
-    const MERCHANT = 'merchant';
-    const COMMOM = 'common';
+    public const MERCHANT = 'merchant';
+    public const COMMOM = 'common';
     private array $typeEnum = [self::MERCHANT, self::COMMOM];
     private string $type;
     private bool $canTransfer;

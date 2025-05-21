@@ -31,24 +31,23 @@ WORKDIR /opt/www
 
 COPY composer.json composer.lock ./
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    chmod +x /usr/local/bin/composer
+# ✅ Instala Composer e make juntos
+RUN apk add --no-cache make curl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer
 
 RUN chown -R appuser:appgroup /opt/www
-
 
 RUN mkdir -p /opt/www/runtime/container/proxy \
     && chown -R appuser:appgroup /opt/www/runtime
 
+# Instala Xdebug
 RUN apk add --no-cache php83-pecl-xdebug \
     && echo "zend_extension=xdebug.so" > /etc/php83/conf.d/50-xdebug.ini \
     && echo "xdebug.mode=debug" >> /etc/php83/conf.d/50-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /etc/php83/conf.d/50-xdebug.ini \
     && echo "xdebug.client_host=172.17.0.1" >> /etc/php83/conf.d/50-xdebug.ini \
     && echo "xdebug.client_port=9003" >> /etc/php83/conf.d/50-xdebug.ini
-
-
-
 
 USER appuser
 
@@ -57,4 +56,4 @@ RUN composer install
 EXPOSE 9501
 
 CMD ["tail", "-f", "/dev/null"]
-#ENTRYPOINT ["php", "/opt/www/bin/hyperf.php", "start"]
+# ENTRYPOINT ["php", "/opt/www/bin/hyperf.php", "start"]

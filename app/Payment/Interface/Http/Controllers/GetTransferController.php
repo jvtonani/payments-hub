@@ -2,11 +2,9 @@
 
 namespace App\Payment\Interface\Http\Controllers;
 
-use App\Payment\Application\UseCases\CreateTransferUseCase;
 use App\Payment\Application\UseCases\GetTransferUseCase;
 use App\Shared\Interface\Http\Controller\AbstractController;
 use Hyperf\HttpServer\Contract\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 class GetTransferController extends AbstractController
 {

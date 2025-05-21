@@ -6,6 +6,7 @@ use App\Authorization\Domain\Interfaces\AuthorizerInterface;
 use App\Payment\Domain\Entity\Transfer;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;
 use App\Payment\Infra\Messaging\Producer\TransferProducer;
+use App\Shared\Domain\ValueObject\TransferStatus;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
@@ -24,6 +25,11 @@ class ProcessTransferUseCase
 
     public function execute(Transfer $transfer): void
     {
+        if(!$this->isTransferWasAlreadyProccessed($transfer)){
+            $this->logger->info('Transferência em status inadequado para processamento');
+            return;
+        }
+
         if(!$this->authorizer->isAuthorized()) {
             $this->processTransferFailed($transfer);
             $this->logger->info('Transferência falhou, pagador foi estornado');
@@ -63,5 +69,19 @@ class ProcessTransferUseCase
         $transferArray = $transfer->toArray();
 
         $this->transferProducer->publishTransferFinishedEvent($transferArray['id'], $transferArray['payer_user_id'], $transferArray['payee_user_id'], $transferArray['amount'], $transferArray['transfer_status']);
+    }
+
+    private function isTransferWasAlreadyProccessed(Transfer $transfer)
+    {
+        $transferToArray = $transfer->toArray();
+        $hasTransfer = $this->transferRepository->findById($transferToArray['id']);
+
+        $transferStatus = !is_null($hasTransfer) && ($hasTransfer->getTransferStatus() != TransferStatus::CREATED);
+
+        if($transferStatus) {
+            return false;
+        }
+
+        return true;
     }
 }

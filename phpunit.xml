@@ -9,20 +9,11 @@
             <directory suffix="Test.php">./test</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        // Need to generate a file for unit test coverage
-        <whitelist processUncoveredFilesFromWhitelist="false">
-            <directory suffix=".php">./app</directory>
-        </whitelist>
-    </filter>
-
     <coverage>
         <include>
             <directory suffix=".php">app/</directory>
         </include>
     </coverage>
-
     <logging>
-        <log type="coverage-html" target="cover/"/>
     </logging>
 </phpunit>

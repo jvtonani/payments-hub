@@ -2,7 +2,6 @@
 
 namespace App\Notification\Service;
 
-use App\Notification\Service\NotificationChannel\EmailNotification;
 use App\Notification\Model\User as UserModel;
 use App\Notification\Service\NotificationChannel\SmsNotification;
 use Psr\Log\LoggerInterface;

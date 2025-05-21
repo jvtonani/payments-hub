@@ -20,7 +20,7 @@ class GenericExceptionHandler extends ExceptionHandler
     {
         return $this->response->json([
             'error' => 'Algum erro aconteceu',
-            'reason' =>  $throwable->getMessage(),
+            'message' => $throwable->getMessage(),
         ])->withStatus(500);
     }
 

@@ -3,8 +3,6 @@
 namespace App\Notification\Service\NotificationChannel;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
 use Psr\Log\LoggerInterface;
 use App\Shared\Helper\RetryHelper;
 

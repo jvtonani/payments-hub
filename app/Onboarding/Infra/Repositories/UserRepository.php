@@ -24,18 +24,6 @@ class UserRepository implements UserRepositoryInterface
         return $this->toEntity($users[0]);
     }
 
-    public function findByEmailOrCpf(string $identifier): ?User
-    {
-        $model = UserModel::where('email', $identifier)
-            ->orWhere('document_number', $identifier)
-            ->first();
-
-        if ($model === null) {
-            return null;
-        }
-        return $this->toEntity($model);
-    }
-
     public function save(User $user): mixed
     {
         return $this->userModel->save($user->toArray());
