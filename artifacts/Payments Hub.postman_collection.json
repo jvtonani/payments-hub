@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "37dc9aa9-d62f-46a2-8f39-2f85f05330b0",
+		"name": "Payments Hub",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17011227"
+	},
+	"item": [
+		{
+			"name": "User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"umemail@quaquer.com\",\n    \"document\": \"45698799197\",\n    \"user_type\": \"merchant\",\n    \"password\": \"123\",\n    \"name\": \"Nome Qualquer\",\n    \"cellphone\": \"5599999999\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9501/user",
+					"host": [
+						"localhost"
+					],
+					"port": "9501",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"value\": 10.0,\n  \"payer\": 1,\n  \"payee\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9501/transfer",
+					"host": [
+						"localhost"
+					],
+					"port": "9501",
+					"path": [
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9501/transfer/10",
+					"host": [
+						"localhost"
+					],
+					"port": "9501",
+					"path": [
+						"transfer",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit Wallet",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": 4,\n    \"amount\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9501/credit",
+					"host": [
+						"localhost"
+					],
+					"port": "9501",
+					"path": [
+						"credit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

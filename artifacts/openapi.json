@@ -136,15 +136,13 @@
 		"schemas": {
 			"NewUser": {
 				"type": "object",
-				"required": ["email", "document", "user_type", "password", "name", "person_type", "document_type", "cellphone"],
+				"required": ["email", "document", "user_type", "password", "name", "cellphone"],
 				"properties": {
 					"email": { "type": "string", "format": "email" },
 					"document": { "type": "string" },
 					"user_type": { "type": "string" },
 					"password": { "type": "string" },
 					"name": { "type": "string" },
-					"person_type": { "type": "string" },
-					"document_type": { "type": "string" },
 					"cellphone": { "type": "string" }
 				}
 			},
@@ -157,8 +155,7 @@
 					"document_number": { "type": "string", "example": "42891932211" },
 					"user_type": { "type": "string", "example": "common" },
 					"password": { "type": "string", "example": "123" },
-					"person_type": { "type": "string", "example": "pj" },
-					"document_type": { "type": "string", "example": "cnpj" },
+
 					"cellphone": { "type": "string", "example": "16984188998" }
 				}
 			},
