@@ -1,6 +1,6 @@
 # API para Transferência Simplificada
 
-Este projeto é uma aplicação **API monolítica modularizada** desenvolvida com **Hyperf (PHP)**, utilizando princípios de arquitetura limpa e MVC. Ela gerencia transferências bancárias entre usuários, integrando **RabbitMQ** para comunicação assíncrona entre módulos. Inclui:
+Este projeto é uma **API monolítica modularizada** desenvolvida com **Hyperf (PHP)**, utilizando princípios de arquitetura limpa. Ela gerencia transferências bancárias entre usuários, integrando **RabbitMQ** para comunicação assíncrona entre módulos. Inclui:
 
 - Consumidores de eventos
 - Lógica de notificação via **Email** e **SMS**
@@ -42,6 +42,9 @@ make install            # Instala dependências via Composer
 make migration:fresh    # Roda migrations do banco
 make start              # Inicia a aplicação Hyperf
 ```
+
+
+Outros comandos como execução de testes, coverage e etc, podem ser visualizados no arquivo Makefile na raiz do projeto
 
 ## Orientações
 - Crie um usuário (POST /user). Cada usuário já recebe uma carteira com saldo inicial zero. Tipos: common ou merchant.
