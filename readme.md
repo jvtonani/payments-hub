@@ -43,6 +43,7 @@ make migration:fresh    # Roda migrations do banco
 make start              # Inicia a aplicação Hyperf
 ```
 
+
 Outros comandos como execução de testes, coverage e etc, podem ser visualizados no arquivo Makefile na raiz do projeto
 
 ## Orientações
