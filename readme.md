@@ -60,6 +60,7 @@ Para facilitar, importe a collection Postman em /artifacts.
 - Implantar mecanismo em banco NoSql ou outra tecnologia para armazenar o histórico de mudança do status da transferência de modo a permitir reconstruir a cadeia de eventos
 
 ### Melhorias
+- Testes de integração
 - Rever fluxo de mensageria - Notificações desnecessárias
 - Adicionar mecanismos de análise estática em hooks do git
 - Revisar containers
