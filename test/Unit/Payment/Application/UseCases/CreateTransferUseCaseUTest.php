@@ -14,7 +14,6 @@ use App\Wallet\Domain\Entity\Wallet;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
 use App\Shared\Infra\Database\TransactionManager;
 use DomainException;
-use Hyperf\DbConnection\Db;
 use PHPUnit\Framework\TestCase;
 
 class CreateTransferUseCaseUTest extends TestCase

@@ -17,7 +17,8 @@
       "App\\Transfer\\": "app/Payment/",
       "App\\Notification\\": "app/Notification/",
       "App\\Shared\\": "app/Shared/",
-      "App\\Authorization\\": "app/Authorization/"
+      "App\\Authorization\\": "app/Authorization/",
+      "App\\Request\\": "app/Request/"
     }
   },
   "autoload-dev": {
@@ -41,7 +42,8 @@
     "hyperf/migration-generator": "^3.1",
     "guzzlehttp/guzzle": "^7.9",
     "hyperf/amqp": "^3.1",
-    "hyperf/utils": "^3.1"
+    "hyperf/utils": "^3.1",
+    "hyperf/validation": "^3.1"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",

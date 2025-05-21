@@ -3,6 +3,7 @@
 namespace App\Payment\Interface\Http\Controllers;
 
 use App\Payment\Application\UseCases\CreateTransferUseCase;
+use App\Request\CreateTransferRequest;
 use App\Shared\Interface\Http\Controller\AbstractController;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -13,9 +14,9 @@ class CreateTransferController extends AbstractController
     {
     }
 
-    public function perform(): \Psr\Http\Message\ResponseInterface
+    public function perform(CreateTransferRequest $request): \Psr\Http\Message\ResponseInterface
     {
-        $data = $this->request->all();
+        $data = $request->validated();
         $this->logger->info("Inicio da transferência");
         $returnData = $this->createTransferUseCase->execute($data['payee'], $data['payer'], $data['value']);
 

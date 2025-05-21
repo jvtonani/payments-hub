@@ -9,7 +9,7 @@ class Real
 
     public function __construct(float $amount)
     {
-        $this->amount = $amount;
+        $this->amount = round($amount, 5);
     }
 
     public function subtract(Real $amount): self

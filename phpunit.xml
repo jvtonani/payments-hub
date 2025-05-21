@@ -14,7 +14,6 @@
             <directory suffix=".php">app/</directory>
         </include>
     </coverage>
-
     <logging>
     </logging>
 </phpunit>

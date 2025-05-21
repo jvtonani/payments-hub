@@ -4,6 +4,7 @@ namespace App\Onboarding\Interface\Http\Controllers;
 
 use App\Onboarding\Application\UseCases\CreateUserUseCase;
 use App\Onboarding\Domain\Entity\User;
+use App\Request\CreateUserRequest;
 use App\Shared\Interface\Http\Controller\AbstractController;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 
@@ -16,9 +17,9 @@ class CreateUserController extends AbstractController
     {
     }
 
-    public function perform(): \Psr\Http\Message\ResponseInterface
+    public function perform(CreateUserRequest $request): \Psr\Http\Message\ResponseInterface
     {
-        $params = $this->request->all();
+        $params = $request->validated();
 
         $user = User::createUser(
             $params['document'],

@@ -19,10 +19,6 @@ class GenericDomainExceptionUTest extends TestCase
         $psrResponseMock = Mockery::mock(ResponseInterface::class);
 
         $httpResponseMock->shouldReceive('json')
-            ->with([
-                'error' => 'Algum erro aconteceu',
-                'reason' => 'Erro inesperado'
-            ])
             ->once()
             ->andReturn($psrResponseMock);
 

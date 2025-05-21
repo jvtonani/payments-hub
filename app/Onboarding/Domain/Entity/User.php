@@ -4,6 +4,7 @@ namespace App\Onboarding\Domain\Entity;
 
 use App\Onboarding\Domain\ValueObject\UserType;
 use App\Shared\Domain\Builder\DocumentBuilder;
+use App\Shared\Domain\ValueObject\Cpf;
 use App\Shared\Domain\ValueObject\Document;
 use App\Shared\Domain\ValueObject\Email;
 

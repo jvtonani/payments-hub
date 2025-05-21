@@ -7,6 +7,7 @@ use App\Payment\Application\UseCases\ProcessTransferUseCase;
 use App\Payment\Domain\Entity\Transfer;
 use App\Payment\Domain\Repositories\TransferRepositoryInterface;
 use App\Payment\Infra\Messaging\Producer\TransferProducer;
+use App\Shared\Domain\ValueObject\TransferStatus;
 use App\Wallet\Domain\Entity\Wallet;
 use App\Wallet\Domain\Repositories\WalletRepositoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,7 @@ class ProcessTransferUseCaseUTest extends TestCase
             'payer_user_id' => '1',
             'payee_user_id' => '2',
             'amount' => 100,
-            'transfer_status' => 'failed'
+            'transfer_status' => 'created'
         ];
 
         $wallet = $this->createMock(Wallet::class);
@@ -55,7 +56,7 @@ class ProcessTransferUseCaseUTest extends TestCase
         $this->authorizer->expects($this->once())->method('isAuthorized')->willReturn(false);
 
         $transfer->expects($this->once())->method('setStatusFailed');
-        $transfer->expects($this->once())->method('toArray')->willReturn($transferArray);
+        $transfer->expects($this->exactly(2))->method('toArray')->willReturnOnConsecutiveCalls($transferArray, $transferArray);
 
         $this->walletRepository->expects($this->once())
             ->method('findByUserId')
@@ -66,6 +67,11 @@ class ProcessTransferUseCaseUTest extends TestCase
 
         $this->walletRepository->expects($this->once())->method('update')->with($wallet);
 
+        $this->transferRepository->expects($this->once())->method('findById')->willReturn($transfer);
+
+        $transferStatus = new TransferStatus('created');
+
+        $transfer->expects($this->once())->method('getTransferStatus')->willReturn($transferStatus);
         $this->transferRepository->expects($this->once())->method('update')->with($transfer);
 
         $this->transferProducer->expects($this->once())
@@ -75,7 +81,7 @@ class ProcessTransferUseCaseUTest extends TestCase
                 '1',
                 '2',
                 100,
-                'failed'
+                'created'
             );
 
         $this->useCase->execute($transfer);
@@ -99,12 +105,18 @@ class ProcessTransferUseCaseUTest extends TestCase
         $transfer->expects($this->once())->method('getPayeeUserId')->willReturn('2');
         $transfer->expects($this->once())->method('getTransferBalance')->willReturn(200.0);
         $transfer->expects($this->once())->method('setStatusFinished');
-        $transfer->expects($this->once())->method('toArray')->willReturn($transferArray);
+        $transfer->expects($this->exactly(2))->method('toArray')->willReturn($transferArray, $transferArray);
 
         $this->walletRepository->expects($this->once())
             ->method('findByUserId')
             ->with('2')
             ->willReturn($wallet);
+
+        $this->transferRepository->expects($this->once())->method('findById')->willReturn($transfer);
+
+        $transferStatus = new TransferStatus('created');
+
+        $transfer->expects($this->once())->method('getTransferStatus')->willReturn($transferStatus);
 
         $wallet->expects($this->once())->method('credit')->with(200);
         $this->walletRepository->expects($this->once())->method('update')->with($wallet);

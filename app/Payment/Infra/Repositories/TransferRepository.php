@@ -27,6 +27,7 @@ class TransferRepository implements TransferRepositoryInterface
 
     public function save(Transfer $transfer, string $payeeId, string $payerId): mixed
     {
+        $dataToInsert = [];
         $transferArray = $transfer->toArray();
 
         $dataToInsert['payer_id'] = $payerId;

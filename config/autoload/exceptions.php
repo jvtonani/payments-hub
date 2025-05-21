@@ -12,8 +12,10 @@ declare(strict_types=1);
 return [
     'handler' => [
         'http' => [
+            \App\Shared\Infra\Exceptions\ValidationExceptionHandler::class,
             \App\Shared\Infra\Exceptions\GenericExceptionHandler::class,
             \App\Shared\Infra\Exceptions\DomainExceptionHandler::class,
+
         ],
     ],
 ];
